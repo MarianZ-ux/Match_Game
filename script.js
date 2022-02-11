@@ -14,15 +14,15 @@ function appendNewCard(parentElement)
 To accomplish this, the function is should create the new card element (i.e. .card), append it as a child to the parentElement (i.e. #card-container), and return the new card element.*/
 function appendNewCard(parentElement) {
   // Step 1: Make a variable for the card element. Assign it to a new div element.
-let cardElement = document.createElement("div");
+  let cardElement = document.createElement("div");
   // Step 2: Add the "card" class to the card element.
-cardElement.classList.add("card");
+  cardElement.classList.add("card");
   // Step 3: Write the HTML for the children of the card element (card-down and card-up) as a normal string and assign it as the innerHTML of the card element.
-cardElement.innerHTML = `
+  cardElement.innerHTML = `
   '<div class="card-down"></div>'
   '<div class="card-up"></div>';`
   // Step 4: Append the card element to the parentElement, making the card element a "child".
-parentElement.appendChild(cardElement);
+  parentElement.appendChild(cardElement);
   // Step 5: Return the card element.
   return cardElement;
 }
@@ -36,16 +36,15 @@ Returns an array with 12 randomly ordered image classes (i.e. image-X, where X i
 function shuffleCardImageClasses() {
   
   // Step 1: Initialize an array of 2 of each image class strings in-order (e.g. "image-1", "image-1", "image-2"...)
-let imgArray = ["image-1", "image-1", "image-2","image-2",  "image-2", "image-3","image-3", "image-4", "image-4",     "image-5", "image-5", "image-6", "image-6"]
+  let imgArray = ["image-1", "image-1", "image-2","image-2",  "image-2", "image-3","image-3", "image-4", "image-4","image-5", "image-5", "image-6","image-6"]
   /* Step 2: We're going to use a library to randomly "shuffle" the array we created. The library is called "underscore.js" because it uses an "_" charector as an object to contain helper methods.  Load underscore.js in your HTML via the CDN and then look at the "shuffle" method.  Note to ignore the "require" syntax as this is for non-browser environments (i.e. the var "_" will already be available to you from loading the CDN).
-   
   CDN: https://cdnjs.com/libraries/underscore.js/1.4.1
-  Shuffle: https://www.tutorialspoint.com/underscorejs/underscorejs_shuffle.htm    */
-   let shuffledArray = _.shuffle(imgArray);
+  Shuffle: https://www.tutorialspoint.com/underscorejs/underscorejs_shuffle.htm */
+  let shuffledArray = _.shuffle(imgArray);
   // Step 3: Return the shuffled array of class names.
   return shuffledArray;
 }
- shuffleCardImageClassesTest();
+shuffleCardImageClassesTest();
 
 /***  OVERVIEW:
 For each of the 12 cards in the game, this function will create a card, assign it a random image class, and create an object to represent that card in our program.
@@ -55,14 +54,13 @@ The 'shuffledImageClasses' parameter is an array of 12 image class strings (e.g.
 Returns an array of card objects to track all the cards for the rest of our program.*/
 function createCards(parentElement, shuffledImageClasses) {
   // Step 1: Make an empty array to hold our card objects.
-let cardArray = [];
+  let cardArray = [];
   // Step 2: Loop 12 times to create the 12 cards we need.
-for (let i = 0; i < 12; i++) {
-// Step 2(a): create/append a new card = appendNewCard to   store the result in a variable.
- let newCard = appendNewCard(parentElement);
-    
+  for (let i = 0; i < 12; i++) {
+  // Step 2(a): create/append a new card = appendNewCard to   store the result in a variable.
+  let newCard = appendNewCard(parentElement);
     // Step 2(b): new card element, Add an image class using shuffledImageClasses[i] 
-newCard.classList.add(shuffledImageClasses[i]);
+  newCard.classList.add(shuffledImageClasses[i]);
     /* Step 2(c): Create a new cardObject representing this. This should have properties for:
        "index" -- what iteration of the loop is this,
        "element" -- the dom element for the card,
@@ -78,7 +76,6 @@ let cardObject= {
   return cardArray;
 };
 createCardsTest();
-
 
 /***  doCardsMatch
 OVERVIEW:
@@ -97,7 +94,7 @@ function doCardsMatch(cardObject1, cardObject2) {
 doCardsMatchTest();
 
 /* An object used below as a dictionary to store counter names and their respective values.  Do you remember using objects as dictionaries? If not, go back to that lecture to review. */
-let counters = {};
+  let counters = {};
 
 /***  incrementCounter 
 OVERVIEW:
@@ -114,7 +111,7 @@ function incrementCounter(counterName, parentElement) {
   // Step 2: Increment the counter for 'counterName'.
   counters[counterName]++;
   // Step 3: Change the DOM within 'parentElement' to display the new counter value.
-parentElement.innerHTML = counters[counterName];
+  parentElement.innerHTML = counters[counterName];
 }
 //incrementCounterTest();
 /* Variables storing an audio objects to make the various sounds.  See how it's used for the 'click' sound in the provided function below.  */
@@ -129,73 +126,73 @@ Attaches a mouseclick listener to a card (i.e. onclick), flips the card when cli
 INPUT/OUPUT
 The 'cardObject' parameter is a custom card object we created in the 'createCards' function.
 This function will make the card element associated with 'cardObject' clickable and call onCardFlipped with that cardObject after the flip is complete.
-        // THE CODE BELOW RUNS IN RESPONSE TO A CLICK.*/
+// THE CODE BELOW RUNS IN RESPONSE TO A CLICK.*/
 function flipCardWhenClicked(cardObject) {
-        // Adds an "onclick" attribute/listener to the element that will call the function below.
+  // Adds an "onclick" attribute/listener to the element that will call the function below.
  cardObject.element.onclick = function() {
-        // Card is already flipped, return.
+  // Card is already flipped, return.
   if (cardObject.element.classList.contains("flipped")) {
-      return
-        // Play the "click" sound.
-    clickAudio.play()
-        // Add the flipped class immediately after a card is clicked.
+    return clickAudio.play()
+    // Play the "click" sound.
+    
+    // Add the flipped class immediately after a card is clicked.
     cardObject.element.classList.add("flipped")
-        // Wait 500 milliseconds (1/2 of a second) for the flip transition to complete and then call onCardFlipped.
+    // Wait 500ms (1/2 of a second) for the flip transition to complete, then call onCardFlipped.
     setTimeout(function() {
-          // THE CODE BELOW RUNS AFTER a 500ms delay.
+    // THE CODE BELOW RUNS AFTER a 500ms delay.
       onCardFlipped(cardObject)
-    }, 500);
+       500;
+    } )
   }
  }
-  //fixed it!
- 
-          /* The 'onCardFlipped' function below will be called each time the user flips a card.  This variable is used to remember the first card flipped while we wait for the user to flip another card. It should be reset to 'null' each time a second card is flipped. */
+//fixed it!
 
- /********i have no idea why line 155 is wrong & when i // it out then line 156 syntax err
+/* The 'onCardFlipped' function below will be called each time the user flips a card.  This variable is used to remember the first card flipped while we wait for the user to flip another card. It should be reset to 'null' each time a second card is flipped.*/
+/*flipCardWhenClicked
+OVERVIEW:
+This is called each time the user flips a card and should handle and track the game mechanics like: "Is this the first or second card flipped in a sequence?", "Do the cards match", and "Is the game over?"
+INPUT/OUPUT
+The 'newlyFlippedCard' parameter is a custom card object that has just been flipped.*/
 
-        /*flipCardWhenClicked
-        OVERVIEW:
-        This is called each time the user flips a card and should handle and track the game mechanics like: "Is this the first or second card flipped in a sequence?", "Do the cards match", and "Is the game over?"
-        INPUT/OUPUT
-        The 'newlyFlippedCard' parameter is a custom card object that has just been flipped.*/
 function onCardFlipped(newlyFlippedCard) {
-        // Step 1: Add one to the flip counter UI.
+// Step 1: Add one to the flip counter UI
  incrementCounter("flips", document.getElementById("flip-count"));
- let lastCardFlipped = {null
 
-        //let newlyCardFlipped = null;
-        // Step 2: If this is the first card flipped, then remember that card using the 'lastCardFlipped' variable and return (nothing else to do).
-  if lastCardFlipped == null; {
-     lastCardFlipped = newlyFlippedCard;return; }
-        // Otherwise, we know there are two cards flipped that should be stored in 'lastCardFlipped' and 'newlyFlippedCard'.
-        // Step 3: If the cards don't match, then remove the "flipped" class from each, reset 'lastCardFlipped', and return.
-if (!doCardsMatch(lastCardFlipped,newlyFlippedCard) == true) {
-  lastCardFlipped.element.classList.remove("flipped");
-  newlyCardFlipped.element.classList.remove("flipped");
-  lastCardFlipped = null;
-  return;
+  let lastCardFlipped = null; 
+  let newlyCardFlipped = null; 
+// Step 2: If this is the first card flipped, then remember that card using the 'lastCardFlipped' variable and return (nothing else to do).
+    if (lastCardFlipped) {
+      lastCardFlipped = newlyFlippedCard;return; 
+      }
+// Otherwise, we know there are two cards flipped that should be stored in 'lastCardFlipped' and 'newlyFlippedCard'.
+// Step 3: If the cards don't match, then remove the "flipped" class from each, reset 'lastCardFlipped', and return.
+    if (!doCardsMatch(lastCardFlipped)(newlyFlippedCard) == true) {
+        lastCardFlipped.element.classList.remove("flipped");
+        newlyCardFlipped.element.classList.remove("flipped");
+        lastCardFlipped = null;
+        return;
+   }
+// Otherwise, we have two matching cards.
+// Step 4: Increment the match counter. optional: add "glow" effect to the matching cards.
+    else {
+      incrementCounter("matches"), document.getElementById("match-count");
+      lastCardFlipped.element.classList.add("glow");
+      newlyCardFlipped.element.classList.add("glow");
+    }
+  }
 }
- }
-}
-  // Otherwise, we have two matching cards.
-  // Step 4: Increment the match counter and optionally add a "glow" effect to the matching cards.
-else {
-  incrementCounter("matches", document.getElementById("match-count"));
-   lastCardFlipped.element.classList.add("glow");
-   newlyCardFlipped.element.classList.add("glow");
-}
-        // Step 5: Play either the win audio or match audio based on whether the user has the number of matches needed to win.
-if (document.getElementById("match-count").innerHTML == 6) {
+// Step 5: Play either win audio or match audio based on whether the user has the number of matches needed to win.
+  if (document.getElementById("match-count").innerHTML == 6) {
   winAudio.play();
+  }
+  // Step 6: Reset 'lastCardFlipped'.
   else {
     matchAudio.play();
-  
-        // Step 6: Reset 'lastCardFlipped'.
-  lastCardFlipped = null; 
-  reset = (lastCardFlipped = null);
- }
-}
-      // Set up the game.
+    lastCardFlipped = null; 
+    reset = (lastCardFlipped = null);
+  }
+
+// Set up the game.
 let cardObjects = 
   createCards(document.getElementById("card-container"), shuffleCardImageClasses());
 
@@ -204,4 +201,5 @@ if (cardObjects != null) {
     flipCardWhenClicked(cardObjects[i]);
   }
 }
+
 runAllTests()
