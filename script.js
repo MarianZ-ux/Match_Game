@@ -1,157 +1,267 @@
-/***  appendNewCard(parentElement)*/
-
-function appendNewCard(parentElement) {
-  // Step 1: Make a variable for the card element. Assign it to a new div element.
-  let cardElement = document.createElement("div");
-  // Step 2: Add the "card" class to the card element.
-  cardElement.classList.add("card");
-  // Step 3: Write the HTML for the children of the card element (card-down and card-up) as a normal string and assign it as the innerHTML of the card element.
-  cardElement.innerHTML = `
-  '<div class="card-down"></div>'
-  '<div class="card-up"></div>';`
-  // Step 4: Append the card element to the parentElement, making the card element a "child".
-  parentElement.appendChild(cardElement);
-  // Step 5: Return the card element.
-  return cardElement;
+function serialize(element) {
+    var serializer = new XMLSerializer();
+    var result = serializer.serializeToString(element);
+    return result.replace(' xmlns="http://www.w3.org/1999/xhtml"', '');
 }
-appendNewCardTest();
 
-//shuffle
-function shuffleCardImageClasses() {
-  
-  // Step 1: Initialize an array of 2 of each image class strings in-order (e.g. "image-1", "image-1", "image-2"...)
-  let imgArray = ["image-1", "image-1", "image-2","image-2",  "image-2", "image-3","image-3", "image-4", "image-4","image-5", "image-5", "image-6","image-6"]
+function appendNewCardTest() {
+    const ERROR = "FAILED::appendNewCardTest::";
 
-  let shuffledArray = _.shuffle(imgArray);
-  // Step 3: Return the shuffled array of class names.
-  return shuffledArray;
-}
-shuffleCardImageClassesTest();
+    let parent = document.createElement("div");
+    parent.id = "card-container";
+    let returnValue = appendNewCard(parent);
 
-function createCards(parentElement, shuffledImageClasses) {
-  // Step 1: Make an empty array to hold our card objects.
-  let cardArray = [];
-  // Step 2: Loop 12 times to create the 12 cards we need.
-  for (let i = 0; i < 12; i++) {
-  // Step 2(a): create/append a new card = appendNewCard to   store the result in a variable.
-  let newCard = appendNewCard(parentElement);
-    // Step 2(b): new card element, Add an image class using shuffledImageClasses[i] 
-  newCard.classList.add(shuffledImageClasses[i]);
-    /* Step 2(c): Create a new cardObject representing this. This should have properties for:
-       "index" -- what iteration of the loop is this,
-       "element" -- the dom element for the card,
-       "imageClass" -- the string of the image class on the card.*/
-let cardObject= {
-  index:i,
-  element: newCard,
-  imageClass: shuffledImageClasses[i]};
-    // Step 2(d): Append the new cardObject to the array of card objects.
-  cardArray.push(newCard);
-}
-  // Step 3: Return the array of 12 card objects.
-  return cardArray;
-};
-createCardsTest();
+    if (parent.children.length !== 1) {
+        console.error(`${ERROR} This function should be appending a new element as a child of the 'parentElement' parameter but when we checked the number of children on 'parentElement' we got ${parent.children.length}.`);
+        console.log("\nHere's what the HTML looks like:\n\n" + serialize(parent) + "\n\n");
+        return false;
+    }
 
-/***  doCardsMatch */
-function doCardsMatch(cardObject1, cardObject2) {
-  if (cardObject1.imageClass == cardObject2.imageClass)
-  { 
+    let card = parent.children[0];
+    if (!card.classList.contains("card")) {
+        console.error(`${ERROR} This function should be adding a card div with the class 'card' as the first child of 'parentElement' but the child of 'parentElement' doesn't have the 'card' class.`);
+        console.log("\nHere's what the HTML looks like:\n\n" + serialize(parent) + "\n\n");
+        return false;
+    }
+
+    if (card.children.length !== 2) {
+        console.error(`${ERROR} card div should have 2 children, got ${card.children.length}. The card-container should have a div with the class card-down and another div with the class card-up.`);
+        return false;
+    }
+
+    let cardDown = card.children[0];
+    let cardUp = card.children[1];
+
+    if (!cardDown.classList.contains("card-down")) {
+        console.error(`${ERROR} card div's first child should have 'card-down' class, got ${cardDown.classList}. Make sure to add the card-down class to the first div inside card.`);
+        return false;
+    }
+
+    if (!cardUp.classList.contains("card-up")) {
+        console.error(`${ERROR} card div's second child should have 'card-up' class, got ${cardUp.classList}. Make sure to add the card-up class to the second div inside card.`);
+        return false;
+    }
+
+    if (returnValue !== card) {
+        console.error(`${ERROR} Remember to return the card! The return value of this function should be the card but that's not what we got.`);
+        return false;
+    }
+
+    console.log("PASSED appendNewCardTest");
     return true;
-  }
-  else {return  false;
-  }
 }
-doCardsMatchTest();
 
-/* An object used below as a dictionary to store counter names and their respective values.  Do you remember using objects as dictionaries? If not, go back to that lecture to review. */
-  let counters = {};
+function shuffleCardImageClassesTest() {
+    const ERROR = "FAILED::shuffleCardImageClassesTest::";
 
-/***  incrementCounter */
-
-function incrementCounter(counterName, parentElement) {
-  // Step 1: If the 'counterName' property is not defined in the 'counters' object, add it with a value of 0.
-  if (counters[counterName]==undefined){
-    counters[counterName]=0;
-  }
-  // Step 2: Increment the counter for 'counterName'.
-  counters[counterName]++;
-  // Step 3: Change the DOM within 'parentElement' to display the new counter value.
-  parentElement.innerHTML = counters[counterName];
-}
-//incrementCounterTest();
-
-/* Variables storing an audio objects to make the various sounds. See how it's used for the 'click' sound in the provided function below.  */
-  let clickAudio = new Audio('audio/click.wav');
-  let matchAudio = new Audio('audio/match.wav');
-  let winAudio = new Audio('audio/win.wav');
-
-/***  flipCardWhenClicked*/
-function flipCardWhenClicked(cardObject) {
-  // Adds an "onclick" attribute/listener to the element that will call the function below.
- (cardObject.element.onclick = function() {
-  // Card is already flipped, return.
-  if (cardObject.element.classList.contains("flipped")) {
-    return clickAudio.play()
-    // Play the "click" sound.
-    
-    // Add the flipped class immediately after a card is clicked.
-  if (cardObject.element.classList.add("flipped"))
-    // Wait 500ms (1/2 of a second) for the flip transition to complete, then call onCardFlipped.
-    setTimeout(function() {
-    // THE CODE BELOW RUNS AFTER a 500ms delay.
-      onCardFlipped(cardObject)
-       500;})
-//   } 
-// } 
-  
-//onCardFlipped
-function onCardFlipped(newlyFlippedCard) {
-// Step 1: Add one to the flip counter UI
-  incrementCounter("flips", document.getElementById("flip-count"));
-  let lastCardFlipped = (null); 
-  let newlyCardFlipped = (null); 
-
-// Step 2: If this is the first card flipped, then remember that card using the 'lastCardFlipped' variable and return (nothing else to do).
-  if (lastCardFlipped) {
-      lastCardFlipped = newlyFlippedCard;return; 
-      }
-// Otherwise, we know there are two cards flipped that should be stored in 'lastCardFlipped' + 'newlyFlippedCard'.
-// Step 3: If the cards don't match, then remove the "flipped" class from each, reset 'lastCardFlipped', and return.
-    if (!doCardsMatch(lastCardFlipped)(newlyFlippedCard) == true) {
-        lastCardFlipped.element.classList.remove("flipped");
-        newlyCardFlipped.element.classList.remove("flipped");
-        lastCardFlipped = null;
-        return;
+    if (shuffleCardImageClasses == undefined) {
+        console.error(ERROR + getUndefinedError("shuffleCardImageClassesTest"));
+        return false;
     }
-// Otherwise, we have two matching cards.
-// Step 4: Increment the match counter. optional: add "glow" effect to the matching cards.
-    else {
-      incrementCounter("matches"), document.getElementById("match-count");
-      lastCardFlipped.element.classList.add("glow");
-      newlyCardFlipped.element.classList.add("glow");
+
+    let imageArray1 = shuffleCardImageClasses();
+    let imageArray2 = shuffleCardImageClasses();
+    let imageArray3 = shuffleCardImageClasses();
+    let imageArray4 = shuffleCardImageClasses();
+
+    if (typeof (imageArray1) !== "object") {
+        console.error(`${ERROR}should return an array of strings but returned ${typeof (imageArray1)}. Make sure this function is defining and returning an array.`);
+        return false;
     }
-  }
 
-// Step 5: Play either win audio or match audio based on whether the user has the number of matches needed to win.
-  if (document.getElementById("match-count").innerHTML == 6) {
-  winAudio.play();
-  }
-  // Step 6: Reset 'lastCardFlipped'.
-  else {
-    matchAudio.play();
-    lastCardFlipped = null; 
-    reset = (lastCardFlipped = null);
-  }
+    if (imageArray1.length !== 12) {
+        console.error(`${ERROR}should return an array of 12 strings but got ${imageArray1.length}.`);
+        return false;
+    }
+
+    let allSame = true;
+    let badName = "";
+
+    for (let i = 0; i < imageArray1.length; i++) {
+        // DANI NOTE: This didn't make it to later elements because of the continue statement below, using alternate method
+        // allStrings &= typeof(imageArray1[i]) === "string";
+
+        if (!imageArray1[i].startsWith("image-") || imageArray1[i].length != 7 || imageArray1[i][6] > '6' || imageArray1[i][6] < '1') {
+            badName = imageArray1[i];
+        }
+
+        if (imageArray1[i] == imageArray2[i] && imageArray1[i] == imageArray3[i] && imageArray1[i] == imageArray4[i]) {
+            continue;
+        }
+
+        allSame = false;
+        break;
+    }
+    // DANI NOTE: Using alternate method to check if all strings
+    if (!imageArray1.every(element=>(typeof element === "string"))) {
+        console.error(`${ERROR}should return array of all strings but array elements were not all strings. Make sure all your elements are in fact all strings.`);
+        return false;
+    }
+
+    if (allSame) {
+        console.error(`${ERROR}should return random array but 4 comparison calls returned the same array. Make sure to shuffle!`);
+        return false;
+    }
+
+    if (badName != "") {
+        console.error(`${ERROR}should return array where names start with 'image-X' (1-6) but got '${badName}'.`);
+        return false;
+    }
+
+    console.log("PASSED shuffleCardImageClassesTest");
+    return true;
 }
-// Set up the game.
-let cardObjects = 
-  createCards(document.getElementById("card-container"), shuffleCardImageClasses());
 
-if (cardObjects != null) {
-  for (let i = 0; i < cardObjects.length; i++) {
-    flipCardWhenClicked(cardObjects[i]);
-  }
+function createCardsTest() {
+    const ERROR = "FAILED::createCardsTest::";
+
+    if (createCards == undefined) {
+        console.error(ERROR + getUndefinedError("createCards"));
+        return false;
+    }
+
+    let parent = document.createElement("div");
+
+    // DANI NOTE: I don't know if we want them to have the shuffleCardImageClasses function tested and working by this point, but if we do we should use that here to make it a more accurate test!
+    let imageClasses = shuffleCardImageClasses() || ["image-1", "image-1", "image-2", "image-2", "image-3", "image-3", "image-4", "image-4", "image-5", "image-5", "image-6", "image-6", ];
+
+    cards = createCards(parent, imageClasses);
+
+    if (parent.children.length != 12) {
+        console.error(`${ERROR}should create 12 card objects as children but got ${parent.children.length}. Make sure you are adding the right number of cards to the card-grid-container!`);
+        return false;
+    }
+
+    if (typeof (cards) !== "object" || cards.length == "undefined") {
+        console.error(`${ERROR}should return an array of objects but returned ${typeof (cards)}.`);
+        return false;
+    }
+
+    if (cards.length !== 12) {
+        console.error(`${ERROR}should return 12 card objects as children but got ${parent.children.length}. Make sure you are pushing 12 cards onto your cards array!`);
+        return false;
+    }
+
+    let badObject = null;
+    cards.forEach((card)=>{
+        if (!card.hasOwnProperty("index") || !card.hasOwnProperty("element") || !card.hasOwnProperty("imageClass")) {
+            badObject = card;
+            return false;
+        }
+    }
+    );
+
+    if (badObject !== null) {
+        console.error(`${ERROR}card objects should each have index, element, and imageClass properties but got...`);
+        console.error(badObject);
+        return false;
+    }
+
+    console.log("PASSED createCardsTest");
+    return true;
 }
 
+function doCardsMatchTest() {
+    const ERROR = "FAILED::doCardsMatchTest::";
+
+    if (doCardsMatch == undefined) {
+        console.error(ERROR + getUndefinedError("doCardsMatch"));
+        return false;
+    }
+    let cardA = {
+        index: 5,
+        element: document.createElement("div"),
+        imageClass: "image-2"
+    };
+    let cardB = {
+        index: 7,
+        element: document.createElement("div"),
+        imageClass: "image-2"
+    }
+    let cardC = {
+        index: 9,
+        element: document.createElement("div"),
+        imageClass: "image-5"
+    }
+
+    if (!doCardsMatch(cardA, cardB)) {
+        console.error(`${ERROR}should return 'true' for match but got 'false'.`);
+        console.error(cardA);
+        console.error(cardB);
+        return false;
+    }
+
+    if (doCardsMatch(cardA, cardC)) {
+        console.error(`${ERROR}should return 'false' for mismatch but got 'true'.`);
+        console.error(cardA);
+        console.error(cardC);
+        return false;
+    }
+
+    console.log("PASSED doCardsMatchTest");
+    return true;
+}
+
+function incrementCounterTest() {
+    const ERROR = "FAILED::incrementCounterTest::";
+
+    if (incrementCounter == undefined) {
+        console.error(ERROR + getUndefinedError("incrementCounter"));
+        return false;
+    }
+
+    let parentElement = document.createElement("div");
+
+    incrementCounter("counter1", parentElement);
+    let string1 = parentElement.innerHTML;
+    let value1 = Number(parentElement.innerHTML);
+
+    incrementCounter("counter1", parentElement);
+    let string2 = parentElement.innerHTML;
+    let value2 = Number(parentElement.innerHTML);
+
+    if (!string1) {
+        console.error(`${ERROR}parentElement has not been updated, make sure to change it's innerHTML.`);
+        return false;
+    }
+
+    if (value1 !== 1) {
+        console.error(`${ERROR}should place '1' in parent (counter should increase to 1) after first call but got '${string1}'`);
+        return false;
+    }
+
+    if ((value2 - value1) !== 1) {
+        console.error(`${ERROR}should increment value in parent by 1 but consecutive calls to the same counter but got '${string1}' and '${string2}'`);
+        return false;
+    }
+
+    let parentElement2 = document.createElement("div");
+    incrementCounter("newCounter", parentElement2);
+    let string3 = parentElement2.innerHTML;
+    let value3 = Number(parentElement2.innerHTML);
+
+    if (value3 !== 1) {
+        console.error(`${ERROR}should place '1' in parent after first call with new counterName but got '${string3}'`);
+        return false;
+    }
+
+    console.log("PASSED incrementCounterTest");
+    return true;
+}
+
+function runAllTests() {
+    let tests = [appendNewCardTest, shuffleCardImageClassesTest, createCardsTest, doCardsMatchTest, incrementCounterTest];
+    let passed = true;
+
+    tests.forEach((test)=>{
+        passed &= test();
+    }
+    );
+
+    if (passed) {
+        console.log("ALL TESTS PASSES!!!!");
+    } else {
+        console.log("TEST RUN FAILED");
+    }
+}
 runAllTests()
